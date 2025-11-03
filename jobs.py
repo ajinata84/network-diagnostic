@@ -25,7 +25,7 @@ class PingDevicesJob(Job):
                 self.logger.warning(f"No primary IP for {device.name}. Skipping.")
                 continue
             result = self.ping_device(ip)
-           self.logger.info(f"Ping {ip} ({device.name}) - {result}")
+            self.logger.info(f"Ping {ip} ({device.name}) - {result}")
 
     def ping_device(self, ip):
         try:
