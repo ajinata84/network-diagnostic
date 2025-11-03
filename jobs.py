@@ -1,31 +1,31 @@
-"""Ping Devices Job for Nautobot."""
+"""Ping VMs Job for Nautobot."""
 
 from nautobot.apps.jobs import Job, MultiObjectVar, register_jobs
-from nautobot.dcim.models import Device
+from nautobot.virtualization.models import VirtualMachine
 from ping3 import ping
 
 name = "Network Diagnostic Jobs"
 
-class PingDevicesJob(Job):
-    devices = MultiObjectVar(
-        model=Device,
+class PingVMsJob(Job):
+    vms = MultiObjectVar(
+        model=VirtualMachine,
         required=True,
         query_params={"status": "active"},
     )
 
     class Meta:
-        name = "Ping Devices"
-        description = "Ping selected devices using their primary IPs and log results."
+        name = "Ping VMs"
+        description = "Ping selected virtual machines using their primary IPs and log results."
 
-    def run(self, devices, **kwargs):
-        self.logger.info(f"Starting ping test on {devices.count()} devices")
-        for device in devices:
-            ip = device.primary_ip.address if device.primary_ip else None
+    def run(self, vms, **kwargs):
+        self.logger.info(f"Starting ping test on {vms.count()} VMs")
+        for vm in vms:
+            ip = vm.primary_ip.address if vm.primary_ip else None
             if not ip:
-                self.logger.warning(f"No primary IP for {device.name}. Skipping.")
+                self.logger.warning(f"No primary IP for {vm.name}. Skipping.")
                 continue
             result = self.ping_device(ip)
-            self.logger.info(f"Ping {ip} ({device.name}) - {result}")
+            self.logger.info(f"Ping {ip} ({vm.name}) - {result}")
 
     def ping_device(self, ip):
         try:
@@ -37,4 +37,4 @@ class PingDevicesJob(Job):
         except Exception as e:
             return f"Error: {str(e)}"
 
-register_jobs(PingDevicesJob)
+register_jobs(PingVMsJob)
