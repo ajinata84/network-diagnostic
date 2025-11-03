@@ -10,7 +10,6 @@ class PingVMsJob(Job):
     vms = MultiObjectVar(
         model=VirtualMachine,
         required=True,
-        query_params={"status": "active"},
     )
 
     class Meta:
