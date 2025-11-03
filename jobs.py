@@ -20,9 +20,9 @@ class VMStatusUpdaterJob(Job):
         supports_dryrun = True  # Enables dry-run in UI
 
     def run(self, dry_run, **kwargs):
-        # Cache status objects for efficiency
-        active_status = Status.objects.get(slug="active")
-        offline_status = Status.objects.get(slug="offline")
+        # Cache status objects for efficiency (use name instead of slug)
+        active_status = Status.objects.get(name="Active")
+        offline_status = Status.objects.get(name="Offline")
 
         vms = VirtualMachine.objects.all()
         self.logger.info(f"Checking {vms.count()} VMs (dry_run={dry_run})")
