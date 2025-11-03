@@ -4,7 +4,7 @@ from nautobot.apps.jobs import Job, MultiObjectVar, register_jobs
 from nautobot.virtualization.models import VirtualMachine
 from ping3 import ping
 
-name = "Network Diagnostic Jobs"
+name = "Network Diagnostic Jobs"  # Group name in UI
 
 class PingVMsJob(Job):
     vms = MultiObjectVar(
@@ -13,13 +13,13 @@ class PingVMsJob(Job):
     )
 
     class Meta:
-        name = "Ping VMs"
+        name = "Ping VMs"  # Job name in UI
         description = "Ping selected virtual machines using their primary IPs and log results."
 
     def run(self, vms, **kwargs):
         self.logger.info(f"Starting ping test on {vms.count()} VMs")
         for vm in vms:
-            ip = vm.primary_ip.address if vm.primary_ip else None
+            ip = vm.primary_ip.host if vm.primary_ip else None
             if not ip:
                 self.logger.warning(f"No primary IP for {vm.name}. Skipping.")
                 continue
